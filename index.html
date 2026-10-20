@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Từ một bông hoa nhỏ... 🌸</title>
+  <!-- Google Fonts hỗ trợ tiếng Việt có dấu mượt mà -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500&family=Plus+Jakarta+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --serif: 'Cormorant Garamond', Georgia, serif;
+      --sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --text-dark: #2e3545;
+      --text-muted: #5a6478;
+      --accent-pink: #d96b83;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+    }
+
+    body, html {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: var(--sans);
+      color: var(--text-dark);
+      /* Nền màu nước pastel giống video */
+      background:
+        radial-gradient(circle at 18% 22%, rgba(255, 223, 230, 0.85) 0%, transparent 45%),
+        radial-gradient(circle at 82% 28%, rgba(205, 234, 255, 0.9) 0%, transparent 50%),
+        radial-gradient(circle at 50% 65%, rgba(255, 245, 238, 0.95) 0%, transparent 55%),
+        radial-gradient(circle at 25% 85%, rgba(215, 243, 230, 0.75) 0%, transparent 50%),
+        linear-gradient(180deg, #cbe5ff 0%, #e8f3fc 48%, #f8eee8 82%, #e4f0e2 100%);
+      position: relative;
+    }
+
+    /* Hiệu ứng mây màu nước mềm mại */
+    .watercolor-clouds {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse 45% 22% at 25% 18%, rgba(255, 255, 255, 0.7), transparent),
+        radial-gradient(ellipse 50% 25% at 75% 22%, rgba(255, 255, 255, 0.65), transparent),
+        radial-gradient(ellipse 60% 30% at 50% 45%, rgba(255, 240, 245, 0.5), transparent);
+      filter: blur(12px);
+      z-index: 0;
+    }
+
+    /* Nhãn góc trái trên giống video */
+    .top-badge {
+      position: fixed;
+      top: 20px;
+      left: 24px;
+      z-index: 20;
+      padding: 8px 16px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.55);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.75);
+      font-size: 0.82rem;
+      color: #4a5568;
+      letter-spacing: 0.01em;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+    }
+
+    /* Nút tạo link cá nhân hóa ở góc phải trên */
+    .share-btn {
+      position: fixed;
+      top: 20px;
+      right: 24px;
+      z-index: 20;
+      padding: 8px 15px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+      font-family: var(--sans);
+      font-size: 0.8rem;
+      color: #4a5568;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
+    }
+    .share-btn:hover {
+      background: rgba(255, 255, 255, 0.9);
+      transform: translateY(-1px);
+    }
+
+    /* Tiêu đề mở đầu */
+    .intro-header {
+      position: absolute;
+      top: 16%;
+      left: 50%;
+      transform: translateX(-50%);
+      text-align: center;
+      z-index: 10;
+      width: 90%;
+      max-width: 600px;
+      transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    .intro-header.hidden {
+      opacity: 0;
+      transform: translate(-50%, -20px);
+      pointer-events: none;
+    }
+    .intro-header h1 {
+      font-family: var(--serif);
+      font-size: clamp(2.2rem, 4.5vw, 3.3rem);
+      font-weight: 600;
+      color: #2c3545;
+      margin-bottom: 10px;
+      letter-spacing: 0.01em;
+    }
+    .intro-header p {
+      font-size: clamp(0.9rem, 1.8vw, 1.05rem);
+      color: #5e6a7e;
+      font-weight: 400;
+    }
+
+    /* Khu vực vườn hoa */
+    #garden {
+      position: absolute;
+      inset: 0;
+      z-index: 5;
+      pointer-events: none;
+    }
+
+    /* Bông hoa chính ở giữa để click */
+    .hero-flower-wrapper {
+      position: absolute;
+      bottom: -20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 240px;
+      height: 62vh;
+      min-height: 360px;
+      max-height: 540px;
+      z-index: 8;
+      cursor: pointer;
+      pointer-events: auto;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      transition: filter 0.3s ease;
+    }
+    .hero-flower-wrapper:hover {
+      filter: drop-shadow(0 0 18px rgba(244, 14fb, 168, 0.55));
+    }
+    .hero-flower-wrapper .flower-svg {
+      width: 100%;
+      height: 100%;
+      transform-origin: bottom center;
+      animation: swayHero 4.5s ease-in-out infinite alternate;
+    }
+
+    /* Bông hoa mọc thêm trong vườn */
+    .garden-flower {
+      position: absolute;
+      bottom: -35px;
+      transform-origin: bottom center;
+      pointer-events: none;
+      will-change: transform;
+      opacity: 0;
+      transform: translateY(100%) scale(0.2);
+      transition:
+        transform 1.8s cubic-bezier(0.22, 1, 0.36, 1),
+        opacity 0.9s ease;
+    }
+    .garden-flower.bloomed {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+    }
+    .garden-flower .flower-inner {
+      width: 100%;
+      height: 100%;
+      transform-origin: bottom center;
+      animation: swayGarden var(--sway-dur, 4.5s) ease-in-out var(--sway-delay, 0s) infinite alternate;
+    }
+
+    @keyframes swayHero {
+      0% { transform: rotate(-2.2deg); }
+      100% { transform: rotate(2.2deg); }
+    }
+    @keyframes swayGarden {
+      0% { transform: rotate(calc(var(--base-rot, 0deg) - 2.8deg)); }
+      100% { transform: rotate(calc(var(--base-rot, 0deg) + 2.8deg)); }
+    }
+
+    /* Dòng trạng thái phía dưới giống video */
+    .bottom-caption {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%) translateY(15px);
+      z-index: 15;
+      padding: 10px 24px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.72);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.85);
+      font-size: 0.92rem;
+      color: #3c4657;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.6s ease;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+      white-space: nowrap;
+    }
+    .bottom-caption.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* Nút mở lại lời chúc khi đang ngắm vườn hoa */
+    .reopen-card-btn {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      z-index: 18;
+      padding: 11px 26px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(225, 145, 165, 0.5);
+      color: #b84a62;
+      font-family: var(--sans);
+      font-weight: 600;
+      font-size: 0.92rem;
+      cursor: pointer;
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.4s ease;
+      box-shadow: 0 8px 25px rgba(184, 74, 98, 0.15);
+    }
+    .reopen-card-btn.visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+      pointer-events: auto;
+    }
+    .reopen-card-btn:hover {
+      background: #fff;
+      transform: translateX(-50%) translateY(-2px);
+    }
+
+    /* Thiệp lời chúc ở giữa màn hình giống video */
+    .wish-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 30;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(245, 238, 240, 0.22);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.8s ease;
+    }
+    .wish-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .wish-card {
+      width: 100%;
+      max-width: 470px;
+      background: rgba(255, 252, 249, 0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-radius: 28px;
+      border: 1px solid rgba(255, 255, 255, 0.95);
+      box-shadow:
+        0 24px 60px rgba(72, 52, 60, 0.14),
+        0 0 0 1px rgba(235, 195, 205, 0.35) inset;
+      padding: 36px 34px 30px;
+      text-align: center;
+      transform: translateY(28px) scale(0.96);
+      transition: transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .wish-overlay.active .wish-card {
+      transform: translateY(0) scale(1);
+    }
+
+    .card-flower-icon {
+      width: 38px;
+      height: 38px;
+      margin: 0 auto 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: rgba(248, 215, 224, 0.45);
+      font-size: 1.2rem;
+    }
+
+    .card-greeting {
+      font-size: 0.92rem;
+      color: #8c6d75;
+      margin-bottom: 8px;
+      font-weight: 500;
+    }
+
+    .card-title {
+      font-family: var(--serif);
+      font-size: clamp(1.75rem, 3.8vw, 2.25rem);
+      line-height: 1.22;
+      color: #2b3140;
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+
+    .card-body p {
+      font-size: 0.94rem;
+      line-height: 1.65;
+      color: #4f5868;
+      margin-bottom: 14px;
+    }
+
+    .card-highlight {
+      font-size: 0.98rem;
+      font-weight: 600;
+      color: #c95670;
+      margin: 18px 0 22px;
+    }
+
+    .btn-view-garden {
+      display: inline-block;
+      padding: 11px 28px;
+      border-radius: 999px;
+      border: 1px solid rgba(210, 180, 190, 0.55);
+      background: rgba(255, 246, 248, 0.9);
+      color: #4a5262;
+      font-family: var(--sans);
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+    .btn-view-garden:hover {
+      background: #fceef2;
+      border-color: #d9899c;
+      color: #2b3140;
+      transform: translateY(-1px);
+    }
+
+    /* Hạt phấn hoa / cánh hoa bay lơ lửng */
+    .petal-particle {
+      position: absolute;
+      pointer-events: none;
+      z-index: 6;
+      border-radius: 150% 0 150% 0;
+      opacity: 0.65;
+      animation: floatPetal linear infinite;
+    }
+    @keyframes floatPetal {
+      0% {
+        transform: translateY(105vh) rotate(0deg) translateX(0);
+        opacity: 0;
+      }
+      15% { opacity: 0.7; }
+      85% { opacity: 0.7; }
+      100% {
+        transform: translateY(-10vh) rotate(360deg) translateX(60px);
+        opacity: 0;
+      }
+    }
+
+    /* Modal tạo link gửi tặng */
+    .custom-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      background: rgba(25, 30, 40, 0.45);
+      backdrop-filter: blur(6px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .custom-modal.open {
+      display: flex;
+    }
+    .custom-box {
+      background: #fff;
+      width: 100%;
+      max-width: 440px;
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.2);
+    }
+    .custom-box h3 {
+      font-family: var(--serif);
+      font-size: 1.5rem;
+      margin-bottom: 14px;
+      color: #2c3545;
+    }
+    .custom-box label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #5a6478;
+      margin: 10px 0 4px;
+    }
+    .custom-box input, .custom-box textarea {
+      width: 100%;
+      padding: 9px 12px;
+      border: 1px solid #dce2ec;
+      border-radius: 10px;
+      font-family: var(--sans);
+      font-size: 0.88rem;
+      user-select: text;
+    }
+    .custom-box textarea {
+      resize: vertical;
+      min-height: 75px;
+    }
+    .custom-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 16px;
+    }
+    .custom-actions button {
+      padding: 9px 16px;
+      border-radius: 10px;
+      border: none;
+      font-family: var(--sans);
+      font-size: 0.86rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .btn-cancel { background: #eef2f7; color: #4a5568; }
+    .btn-copy { background: #d96b83; color: #fff; }
+  </style>
+</head>
+<body>
+
+  <div class="watercolor-clouds"></div>
+
+  <!-- Nhãn góc trên bên trái -->
+  <div class="top-badge">Kịch bản: nở một vườn thương</div>
+
+  <!-- Nút tạo link cá nhân hóa -->
+  <button class="share-btn" id="openCustomBtn" title="Tùy chỉnh lời chúc và lấy link chia sẻ">
+    ✨ Tạo link lời chúc
+  </button>
+
+  <!-- Tiêu đề ban đầu -->
+  <div class="intro-header" id="introHeader">
+    <h1>Từ một bông hoa nhỏ...</h1>
+    <p>Chạm vào hoa, một điều dịu dàng đang chờ bạn</p>
+  </div>
+
+  <!-- Vườn hoa -->
+  <div id="garden">
+    <div class="hero-flower-wrapper" id="heroFlower" title="Chạm vào bông hoa"></div>
+  </div>
+
+  <!-- Dòng chữ chạy dưới đáy khi hoa nở -->
+  <div class="bottom-caption" id="bottomCaption">
+    Từ một bông hoa, cả khu vườn đang thức giấc...
+  </div>
+
+  <!-- Nút mở lại thiệp sau khi bấm "Ngắm vườn hoa" -->
+  <button class="reopen-card-btn" id="reopenCardBtn">
+    💌 Xem lại lời chúc
+  </button>
+
+  <!-- Thiệp lời chúc 20/10 -->
+  <div class="wish-overlay" id="wishOverlay">
+    <div class="wish-card">
+      <div class="card-flower-icon">🌸</div>
+      <div class="card-greeting" id="cardTo">Gửi bạn thương mến,</div>
+      <h2 class="card-title" id="cardTitle">Mong những điều đẹp đẽ<br>luôn nở bên bạn.</h2>
+      <div class="card-body">
+        <p id="cardP1">
+          Một bông hoa có thể làm một ngày thêm đẹp.<br>
+          Còn bạn, làm thế giới này dịu dàng hơn.
+        </p>
+        <p id="cardP2">
+          Nhân ngày 20/10, chúc bạn luôn được yêu thương, trân trọng và giữ mãi nhiều niềm vui. Mong bạn đủ bình yên để tận hưởng những điều nhỏ bé, đủ tự tin để theo đuổi những điều mình yêu.
+        </p>
+        <p id="cardP3">
+          Hôm nay và cả những ngày sau,<br>
+          hãy cứ rạng rỡ theo cách của riêng mình nhé.
+        </p>
+      </div>
+      <div class="card-highlight" id="cardSign">Gửi bạn thật nhiều thương mến ♡</div>
+      <button class="btn-view-garden" id="viewGardenBtn">Ngắm vườn hoa</button>
+    </div>
+  </div>
+
+  <!-- Hộp thoại tạo link gửi cho người khác -->
+  <div class="custom-modal" id="customModal">
+    <div class="custom-box">
+      <h3>Tạo link gửi tặng 🌸</h3>
+      <label>Lời chào đầu thiệp</label>
+      <input type="text" id="inpTo" value="Gửi bạn thương mến," />
+      <label>Tiêu đề chính</label>
+      <input type="text" id="inpTitle" value="Mong những điều đẹp đẽ luôn nở bên bạn." />
+      <label>Nội dung lời chúc</label>
+      <textarea id="inpMsg">Nhân ngày 20/10, chúc bạn luôn được yêu thương, trân trọng và giữ mãi nhiều niềm vui. Mong bạn đủ bình yên để tận hưởng những điều nhỏ bé, đủ tự tin để theo đuổi những điều mình yêu.</textarea>
+      <label>Lời kết</label>
+      <input type="text" id="inpSign" value="Gửi bạn thật nhiều thương mến ♡" />
+      <div class="custom-actions">
+        <button class="btn-cancel" id="closeCustomBtn">Đóng</button>
+        <button class="btn-copy" id="copyLinkBtn">Sao chép Link</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Bảng màu hoa hồng màu nước giống trong video
+    const ROSE_PALETTES = [
+      { name: 'pink',     outer: '#f9ccd6', mid: '#f39bb0', inner: '#e26886', core: '#c54264' },
+      { name: 'peach',    outer: '#fde0d0', mid: '#f7b297', inner: '#ea8464', core: '#cc5b3d' },
+      { name: 'sky',      outer: '#d8eeff', mid: '#a8d5fa', inner: '#76b5eb', core: '#4b8ec9' },
+      { name: 'lavender', outer: '#eadcf8', mid: '#cbb0ee', inner: '#a682da', core: '#7f58b8' },
+      { name: 'butter',   outer: '#fdf3cf', mid: '#f7dc8c', inner: '#ebc054', core: '#cc982b' },
+      { name: 'coral',    outer: '#ffd6d6', mid: '#f79c9e', inner: '#e6686b', core: '#bf3f43' }
+    ];
+
+    let uidCounter = 0;
+
+    // Hàm vẽ SVG bông hoa hồng nhiều lớp cánh + thân lá chi tiết
+    function createRoseSVG(palette, stemBend = 0) {
+      uidCounter++;
+      const gradOuter = `ro_${uidCounter}`;
+      const gradMid   = `rm_${uidCounter}`;
+      const gradInner = `ri_${uidCounter}`;
+      const gradLeaf  = `rl_${uidCounter}`;
+
+      // Tạo các lớp cánh hoa xoáy tròn tự nhiên
+      let outerPetals = '';
+      for (let i = 0; i < 8; i++) {
+        const angle = i * 45 + (i % 2) * 10;
+        outerPetals += `<ellipse cx="100" cy="70" rx="28" ry="38" fill="url(#${gradOuter})" stroke="${palette.mid}" stroke-width="0.6" stroke-opacity="0.4" transform="rotate(${angle} 100 105)" />`;
+      }
+
+      let midPetals = '';
+      for (let i = 0; i < 7; i++) {
+        const angle = i * 51.4 + 15;
+        midPetals += `<ellipse cx="100" cy="78" rx="23" ry="30" fill="url(#${gradMid})" stroke="${palette.inner}" stroke-width="0.5" stroke-opacity="0.45" transform="rotate(${angle} 100 105)" />`;
+      }
+
+      let innerPetals = '';
+      for (let i = 0; i < 6; i++) {
+        const angle = i * 60 + 30;
+        innerPetals += `<ellipse cx="100" cy="86" rx="16" ry="21" fill="url(#${gradInner})" transform="rotate(${angle} 100 105)" />`;
+      }
+
+      const ctrlX = 100 + stemBend;
+
+      return `
+      <svg class="flower-svg" viewBox="0 0 200 460" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="${gradOuter}" cx="50%" cy="35%" r="65%">
+            <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/>
+            <stop offset="45%" stop-color="${palette.outer}"/>
+            <stop offset="100%" stop-color="${palette.mid}"/>
+          </radialGradient>
+          <radialGradient id="${gradMid}" cx="50%" cy="40%" r="65%">
+            <stop offset="0%" stop-color="${palette.outer}"/>
+            <stop offset="65%" stop-color="${palette.mid}"/>
+            <stop offset="100%" stop-color="${palette.inner}"/>
+          </radialGradient>
+          <radialGradient id="${gradInner}" cx="50%" cy="50%" r="60%">
+            <stop offset="0%" stop-color="${palette.mid}"/>
+            <stop offset="65%" stop-color="${palette.inner}"/>
+            <stop offset="100%" stop-color="${palette.core}"/>
+          </radialGradient>
+          <linearGradient id="${gradLeaf}" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#84b882"/>
+            <stop offset="100%" stop-color="#4e8551"/>
+          </linearGradient>
+        </defs>
+
+        <!-- Thân hoa -->
+        <path d="M 100 135 Q ${ctrlX} 290 100 460" stroke="#5a8f59" stroke-width="6.5" stroke-linecap="round"/>
+        <path d="M 98 135 Q ${ctrlX - 2} 290 98 460" stroke="#7eb37a" stroke-width="2" stroke-linecap="round" opacity="0.7"/>
+
+        <!-- Lá bên trái -->
+        <g transform="translate(${96 + stemBend * 0.45}, 240) rotate(-32)">
+          <path d="M 0 0 C -35 -18 -65 5 -72 30 C -45 38 -18 25 0 0 Z" fill="url(#${gradLeaf})"/>
+          <path d="M 0 0 Q -36 10 -68 28" stroke="#3b693e" stroke-width="1.3" opacity="0.6"/>
+        </g>
+
+        <!-- Lá bên phải -->
+        <g transform="translate(${104 + stemBend * 0.55}, 300) rotate(28)">
+          <path d="M 0 0 C 35 -18 65 5 72 30 C 45 38 18 25 0 0 Z" fill="url(#${gradLeaf})"/>
+          <path d="M 0 0 Q 36 10 68 28" stroke="#3b693e" stroke-width="1.3" opacity="0.6"/>
+        </g>
+
+        <!-- Lá phụ phía trên -->
+        <g transform="translate(${98 + stemBend * 0.25}, 185) rotate(22) scale(0.75)">
+          <path d="M 0 0 C 35 -18 65 5 72 30 C 45 38 18 25 0 0 Z" fill="url(#${gradLeaf})"/>
+        </g>
+
+        <!-- Đài hoa -->
+        <path d="M 78 132 Q 100 150 122 132 Q 108 118 100 125 Q 92 118 78 132 Z" fill="#598c58"/>
+
+        <!-- Bông hoa hồng nhiều lớp -->
+        <g transform="translate(0, 6)">
+          ${outerPetals}
+          ${midPetals}
+          ${innerPetals}
+          <!-- Nhụy xoáy trung tâm -->
+          <circle cx="100" cy="105" r="14" fill="${palette.core}" opacity="0.85"/>
+          <path d="M 93 103 C 96 96, 106 96, 107 104 C 108 111, 95 113, 92 106" stroke="${palette.outer}" stroke-width="2" stroke-linecap="round" fill="none"/>
+          <path d="M 97 105 C 99 101, 104 102, 103 106" stroke="#fff" stroke-width="1.4" stroke-linecap="round" fill="none" opacity="0.8"/>
+        </g>
+      </svg>`;
+    }
+
+    const heroFlowerEl   = document.getElementById('heroFlower');
+    const gardenEl       = document.getElementById('garden');
+    const introHeaderEl  = document.getElementById('introHeader');
+    const bottomCaption  = document.getElementById('bottomCaption');
+    const wishOverlay    = document.getElementById('wishOverlay');
+    const viewGardenBtn  = document.getElementById('viewGardenBtn');
+    const reopenCardBtn  = document.getElementById('reopenCardBtn');
+
+    // Khởi tạo bông hoa hồng đầu tiên ở chính giữa
+    heroFlowerEl.innerHTML = createRoseSVG(ROSE_PALETTES[0], -8);
+
+    let hasBloomed = false;
+
+    // Tạo hiệu ứng cánh hoa bay nhẹ
+    function spawnFloatingPetals() {
+      for (let i = 0; i < 18; i++) {
+        const p = document.createElement('div');
+        p.className = 'petal-particle';
+        const size = 8 + Math.random() * 10;
+        p.style.width = `${size}px`;
+        p.style.height = `${size * 1.3}px`;
+        p.style.left = `${Math.random() * 100}vw`;
+        p.style.background = ['#f9ccd6', '#fde0d0', '#d8eeff', '#eadcf8'][i % 4];
+        p.style.animationDuration = `${9 + Math.random() * 8}s`;
+        p.style.animationDelay = `${Math.random() * 5}s`;
+        document.body.appendChild(p);
+      }
+    }
+
+    // Khi click vào bông hoa chính
+    heroFlowerEl.addEventListener('click', () => {
+      if (hasBloomed) {
+        wishOverlay.classList.add('active');
+        reopenCardBtn.classList.remove('visible');
+        return;
+      }
+      hasBloomed = true;
+
+      // Ẩn tiêu đề ban đầu & hiện dòng chữ dưới đáy giống video
+      introHeaderEl.classList.add('hidden');
+      bottomCaption.classList.add('show');
+      spawnFloatingPetals();
+
+      // Tạo 52 bông hoa mọc trải đều khắp màn hình theo 3 lớp (xa, vừa, gần)
+      const totalFlowers = window.innerWidth < 600 ? 34 : 54;
+
+      for (let i = 0; i < totalFlowers; i++) {
+        const wrapper = document.createElement('div');
+        wrapper.className = 'garden-flower';
+
+        // Phân bố vị trí ngang từ -4% đến 96%
+        const leftPercent = -4 + (i / (totalFlowers - 1)) * 100 + (Math.random() * 3 - 1.5);
+        const layer = i % 3; // 0: lớp sau, 1: lớp giữa, 2: lớp trước
+
+        let heightVh, widthPx, zIdx;
+        if (layer === 0) {
+          heightVh = 32 + Math.random() * 18;
+          widthPx  = 115 + Math.random() * 30;
+          zIdx     = 2;
+        } else if (layer === 1) {
+          heightVh = 44 + Math.random() * 20;
+          widthPx  = 145 + Math.random() * 35;
+          zIdx     = 4;
+        } else {
+          heightVh = 26 + Math.random() * 22;
+          widthPx  = 160 + Math.random() * 40;
+          zIdx     = 7;
+        }
+
+        const baseRot = (Math.random() * 18 - 9).toFixed(1);
+        const swayDur = (3.6 + Math.random() * 2.5).toFixed(2);
+        const swayDelay = (Math.random() * 2).toFixed(2);
+
+        wrapper.style.left = `${leftPercent}%`;
+        wrapper.style.width = `${widthPx}px`;
+        wrapper.style.height = `${heightVh}vh`;
+        wrapper.style.zIndex = zIdx;
+        wrapper.style.marginLeft = `-${widthPx / 2}px`;
+        wrapper.style.setProperty('--base-rot', `${baseRot}deg`);
+        wrapper.style.setProperty('--sway-dur', `${swayDur}s`);
+        wrapper.style.setProperty('--sway-delay', `-${swayDelay}s`);
+
+        const palette = ROSE_PALETTES[(i + Math.floor(Math.random() * 2)) % ROSE_PALETTES.length];
+        const stemBend = Math.round(Math.random() * 28 - 14);
+
+        wrapper.innerHTML = `<div class="flower-inner">${createRoseSVG(palette, stemBend)}</div>`;
+        gardenEl.appendChild(wrapper);
+
+        // Nở lan dần từ giữa ra hai bên
+        const distFromCenter = Math.abs(leftPercent - 48);
+        const delayMs = 80 + distFromCenter * 28 + Math.random() * 450;
+
+        setTimeout(() => {
+          wrapper.classList.add('bloomed');
+        }, delayMs);
+      }
+
+      // Hiển thị thiệp lời chúc sau khi vườn hoa nở rộ (~3.4 giây)
+      setTimeout(() => {
+        bottomCaption.classList.remove('show');
+        wishOverlay.classList.add('active');
+      }, 3400);
+    });
+
+    // Nút "Ngắm vườn hoa" -> Ẩn thiệp để ngắm hoa
+    viewGardenBtn.addEventListener('click', () => {
+      wishOverlay.classList.remove('active');
+      reopenCardBtn.classList.add('visible');
+    });
+
+    // Nút "Xem lại lời chúc"
+    reopenCardBtn.addEventListener('click', () => {
+      reopenCardBtn.classList.remove('visible');
+      wishOverlay.classList.add('active');
+    });
+
+    // --- TÍNH NĂNG ĐỌC & TẠO LINK CHIA SẺ QUA URL PARAMETERS ---
+    function loadCustomParamsFromURL() {
+      const params = new URLSearchParams(window.location.search);
+      if (params.get('to'))    document.getElementById('cardTo').textContent = params.get('to');
+      if (params.get('title')) document.getElementById('cardTitle').textContent = params.get('title');
+      if (params.get('msg'))   document.getElementById('cardP2').textContent = params.get('msg');
+      if (params.get('sign'))  document.getElementById('cardSign').textContent = params.get('sign');
+
+      // Nếu là link gửi cho người nhận (có tham số share=1), ẩn nút "Tạo link lời chúc" cho gọn
+      if (params.get('share') === '1') {
+        document.getElementById('openCustomBtn').style.display = 'none';
+      }
+    }
+    loadCustomParamsFromURL();
+
+    const customModal = document.getElementById('customModal');
+    document.getElementById('openCustomBtn').addEventListener('click', () => {
+      customModal.classList.add('open');
+    });
+    document.getElementById('closeCustomBtn').addEventListener('click', () => {
+      customModal.classList.remove('open');
+    });
+    document.getElementById('copyLinkBtn').addEventListener('click', () => {
+      const to    = document.getElementById('inpTo').value.trim();
+      const title = document.getElementById('inpTitle').value.trim();
+      const msg   = document.getElementById('inpMsg').value.trim();
+      const sign  = document.getElementById('inpSign').value.trim();
+
+      // Cập nhật trực tiếp lên thiệp hiện tại
+      document.getElementById('cardTo').textContent = to;
+      document.getElementById('cardTitle').textContent = title;
+      document.getElementById('cardP2').textContent = msg;
+      document.getElementById('cardSign').textContent = sign;
+
+      const url = new URL(window.location.href.split('?')[0]);
+      url.searchParams.set('to', to);
+      url.searchParams.set('title', title);
+      url.searchParams.set('msg', msg);
+      url.searchParams.set('sign', sign);
+      url.searchParams.set('share', '1');
+
+      navigator.clipboard.writeText(url.toString()).then(() => {
+        const btn = document.getElementById('copyLinkBtn');
+        btn.textContent = 'Đã sao chép Link! ✓';
+        setTimeout(() => {
+          btn.textContent = 'Sao chép Link';
+          customModal.classList.remove('open');
+        }, 1200);
+      });
+    });
+  </script>
+</body>
+</html>

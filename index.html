@@ -542,3 +542,25 @@
         const delayMs = 80 + distFromCenter * 28 + Math.random() * 450;
 
         setTimeout(() => {
+          wrapper.classList.add('bloomed');
+        }, delayMs);
+      }
+
+      setTimeout(() => {
+        bottomCaption.classList.remove('show');
+        wishOverlay.classList.add('active');
+      }, 3400);
+    });
+
+    viewGardenBtn.addEventListener('click', () => {
+      wishOverlay.classList.remove('active');
+      reopenCardBtn.classList.add('visible');
+    });
+
+    reopenCardBtn.addEventListener('click', () => {
+      reopenCardBtn.classList.remove('visible');
+      wishOverlay.classList.add('active');
+    });
+  </script>
+</body>
+</html>
